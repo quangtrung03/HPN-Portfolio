@@ -31,7 +31,7 @@ const Loading = ({ onComplete }: { onComplete: () => void }) => {
               <polygon
                 transform="rotate(45 100 100)"
                 strokeWidth="1"
-                stroke="#a855f7"
+                stroke="#3b82f6"
                 fill="none"
                 points="70,70 148,50 130,130 50,150"
                 id="bounce"
@@ -39,7 +39,7 @@ const Loading = ({ onComplete }: { onComplete: () => void }) => {
               <polygon
                 transform="rotate(45 100 100)"
                 strokeWidth="1"
-                stroke="#a855f7"
+                stroke="#3b82f6"
                 fill="none"
                 points="70,70 148,50 130,130 50,150"
                 id="bounce2"
@@ -67,7 +67,7 @@ const Loading = ({ onComplete }: { onComplete: () => void }) => {
                 transform="translate(20, 31)"
                 strokeWidth="2"
                 stroke=""
-                fill="#8b5cf6"
+                fill="#3b82f6"
                 points="80,50 80,75 80,99 40,75"
               />
               <polygon
@@ -79,9 +79,9 @@ const Loading = ({ onComplete }: { onComplete: () => void }) => {
               />
               <defs>
                 <linearGradient y2="100%" x2="0%" y1="-17%" x1="10%" id="gradiente2">
-                  <stop style={{ stopColor: '#a855f700', stopOpacity: 1 }} offset="20%" />
+                  <stop style={{ stopColor: '#3b82f600', stopOpacity: 1 }} offset="20%" />
                   <stop
-                    style={{ stopColor: '#a855f754', stopOpacity: 1 }}
+                    style={{ stopColor: '#3b82f654', stopOpacity: 1 }}
                     offset="100%"
                     id="animatedStop"
                   />
@@ -91,7 +91,7 @@ const Loading = ({ onComplete }: { onComplete: () => void }) => {
                 transform="rotate(180 100 100) translate(20, 20)"
                 strokeWidth="2"
                 stroke=""
-                fill="#a855f7"
+                fill="#3b82f6"
                 points="80,50 80,75 80,99 40,75"
               />
               <polygon
@@ -103,9 +103,9 @@ const Loading = ({ onComplete }: { onComplete: () => void }) => {
               />
               <defs>
                 <linearGradient y2="100%" x2="10%" y1="0%" x1="0%" id="gradiente3">
-                  <stop style={{ stopColor: '#a855f700', stopOpacity: 1 }} offset="20%" />
+                  <stop style={{ stopColor: '#3b82f600', stopOpacity: 1 }} offset="20%" />
                   <stop
-                    style={{ stopColor: '#a855f754', stopOpacity: 1 }}
+                    style={{ stopColor: '#3b82f654', stopOpacity: 1 }}
                     offset="100%"
                     id="animatedStop2"
                   />
@@ -115,7 +115,7 @@ const Loading = ({ onComplete }: { onComplete: () => void }) => {
                 transform="rotate(45 100 100) translate(80, 95)"
                 strokeWidth="2"
                 stroke=""
-                fill="#e0e7ff"
+                fill="#dbeafe"
                 points="5,0 5,5 0,5 0,0"
                 id="particles1"
               />
@@ -123,7 +123,7 @@ const Loading = ({ onComplete }: { onComplete: () => void }) => {
                 transform="rotate(45 100 100) translate(80, 55)"
                 strokeWidth="2"
                 stroke=""
-                fill="#c4b5fd"
+                fill="#93c5fd"
                 points="6,0 6,6 0,6 0,0"
                 id="particles2"
               />
@@ -157,7 +157,7 @@ const Loading = ({ onComplete }: { onComplete: () => void }) => {
           <h2 className="text-3xl font-bold text-white mb-2 animate-pulse">
             Đang tải...
           </h2>
-          <p className="text-purple-300 text-lg animate-bounce">Chuẩn bị portfolio của Hà Quang Trung</p>
+          <p className="text-blue-300 text-lg animate-bounce">Đang tải đợi xíu nhéeee</p>
         </div>
       </div>
 
@@ -182,13 +182,13 @@ const Loading = ({ onComplete }: { onComplete: () => void }) => {
 
         @keyframes umbral {
           0% {
-            stop-color: #a855f72e;
+            stop-color: #3b82f62e;
           }
           50% {
-            stop-color: rgba(168, 85, 247, 0.519);
+            stop-color: rgba(59, 130, 246, 0.519);
           }
           100% {
-            stop-color: #a855f72e;
+            stop-color: #3b82f62e;
           }
         }
         
@@ -225,7 +225,7 @@ const Loading = ({ onComplete }: { onComplete: () => void }) => {
         }
 
         .gem-svg {
-          filter: drop-shadow(0 10px 20px rgba(168, 85, 247, 0.4)) drop-shadow(0 0 40px rgba(168, 85, 247, 0.2));
+          filter: drop-shadow(0 10px 20px rgba(59, 130, 246, 0.4)) drop-shadow(0 0 40px rgba(59, 130, 246, 0.2));
         }
 
         @keyframes float {

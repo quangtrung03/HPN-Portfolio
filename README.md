@@ -1,4 +1,4 @@
-# 🌟 Portfolio - Hà Quang Trung
+# 🌟 Portfolio - Hồ Phi Nhật
 
 Trang portfolio cá nhân hiện đại được xây dựng với Next.js, React và Tailwind CSS. Trang web giới thiệu thông tin cá nhân, kỹ năng và dự án của tôi với giao diện đẹp mắt, hiệu ứng mượt mà và thiết kế responsive.
 
@@ -196,15 +196,15 @@ Dự án này được cấp phép theo MIT License - xem file [LICENSE](LICENSE
 
 ## 📞 Liên hệ
 
-- **Email**: haquangtrung1534@gmail.com
-- **Phone**: 0762669248
+- **Email**: hophinhat04@gmail.com
+- **Phone**: 0783956550
 - **Location**: TP.HCM, Việt Nam
 - **GitHub**: [github.com/quangtrung03](https://github.com/quangtrung03)
 
 ---
 
-**Được xây dựng với ❤️ bởi Hà Quang Trung**
+**Được xây dựng với ❤️ bởi Hồ Phi Nhật**
 
-*Sinh viên năm cuối - Đại học Ngoại ngữ - Tin học TP.HCM*
+*Sinh viên năm cuối - FPT University*
 
 Để có câu hỏi hoặc hỗ trợ, vui lòng [tạo issue](https://github.com/quangtrung03/Portfolio/issues) hoặc liên hệ trực tiếp qua email.

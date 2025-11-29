@@ -1,591 +1,550 @@
 'use client'
 
-import { useRef, useMemo, useEffect, useState } from 'react'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import { useEffect, useRef, useState } from 'react'
+import { Canvas } from '@react-three/fiber'
 import * as THREE from 'three'
 
-  // Component để tạo đường nối động giữa các nodes
-  const DynamicConnectionLine = ({ startIndex, endIndex, material, nodesGroup }: { 
-    startIndex: number, 
-    endIndex: number, 
-    material: THREE.ShaderMaterial,
-    nodesGroup: React.RefObject<THREE.Group>
-  }) => {
-    const meshRef = useRef<THREE.Mesh>(null)
-    const geometryRef = useRef<THREE.CylinderGeometry>(new THREE.CylinderGeometry(0.008, 0.008, 1, 6))
-    
-    useFrame(() => {
-      if (meshRef.current && nodesGroup.current) {
-        const startNode = nodesGroup.current.children[startIndex] as THREE.Mesh
-        const endNode = nodesGroup.current.children[endIndex] as THREE.Mesh
-        
-        if (startNode && endNode) {
-          const start = startNode.position
-          const end = endNode.position
-          
-          // Update geometry scale
-          const distance = start.distanceTo(end)
-          meshRef.current.scale.y = distance
-          
-          // Update position
-          const position = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5)
-          meshRef.current.position.copy(position)
-          
-          // Update rotation
-          const direction = new THREE.Vector3().subVectors(end, start).normalize()
-          const up = new THREE.Vector3(0, 1, 0)
-          const quaternion = new THREE.Quaternion().setFromUnitVectors(up, direction)
-          meshRef.current.setRotationFromQuaternion(quaternion)
-        }
-      }
-    })
-    
-    return <mesh ref={meshRef} geometry={geometryRef.current} material={material} />
+// Shooting Star
+class ShootingStar {
+  x: number = 0
+  y: number = 0
+  length: number = 0
+  speed: number = 0
+  opacity: number = 0
+  angle: number = 0
+  color: string = ''
+
+  constructor(canvas: HTMLCanvasElement) {
+    this.reset(canvas)
+    this.y = Math.random() * canvas.height * 0.6 // Only in top 60%
   }
 
-// Component tạo hiệu ứng Neural Network 3D
-function NeuralNetwork() {
-  const nodesRef = useRef<THREE.Group>(null)
-  const connectionsRef = useRef<THREE.Group>(null)
-  const pulsesRef = useRef<THREE.Group>(null)
-  const [isLightMode, setIsLightMode] = useState(false)
-
-  // Detect theme changes
-  useEffect(() => {
-    const checkTheme = () => {
-      setIsLightMode(document.documentElement.classList.contains('light-mode'))
-    }
+  reset(canvas: HTMLCanvasElement) {
+    this.x = Math.random() * canvas.width
+    this.y = -50
+    this.length = 60 + Math.random() * 80
+    this.speed = 1 + Math.random() * 2
+    this.opacity = 0.8 + Math.random() * 0.2
+    this.angle = Math.PI / 4 + (Math.random() - 0.5) * 0.5
     
-    checkTheme()
-    
-    // Watch for theme changes
-    const observer = new MutationObserver(checkTheme)
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class']
-    })
-    
-    return () => observer.disconnect()
-  }, [])
-  
-  // Tạo dữ liệu cho các neurons và connections
-  const { nodePositions, connections, nodeGeometry, layerInfo } = useMemo(() => {
-    const positions: Array<[number, number, number]> = []
-    const links: Array<[number, number]> = []
-    const sphereGeo = new THREE.SphereGeometry(0.15, 16, 16)
-    
-    // Tạo các layers của neural network
-    const layers = [
-      { count: 8, y: -8, spread: 12, isOuter: true },   // Input layer
-      { count: 12, y: -4, spread: 15, isOuter: false }, // Hidden layer 1
-      { count: 16, y: 0, spread: 18, isOuter: false },  // Hidden layer 2 (core)
-      { count: 12, y: 4, spread: 15, isOuter: false },  // Hidden layer 3
-      { count: 6, y: 8, spread: 10, isOuter: true }     // Output layer
+    // Random colors: purple or blue
+    const colors = [
+      'rgb(139, 92, 246)',
+      'rgb(168, 85, 247)',
+      'rgb(59, 130, 246)',
+      'rgb(96, 165, 250)',
     ]
-    
-    let nodeIndex = 0
-    const layerStartIndices: number[] = []
-    
-    // Tạo các nodes cho mỗi layer
-    layers.forEach((layer, layerIdx) => {
-      layerStartIndices.push(nodeIndex)
-      
-      for (let i = 0; i < layer.count; i++) {
-        const angle = (i / layer.count) * Math.PI * 2
-        const radius = layer.spread * (0.3 + Math.random() * 0.4)
-        
-        const x = Math.cos(angle) * radius + (Math.random() - 0.5) * 3
-        const y = layer.y + (Math.random() - 0.5) * 2
-        const z = Math.sin(angle) * radius + (Math.random() - 0.5) * 3
-        
-        positions.push([x, y, z])
-        nodeIndex++
-      }
-    })
-    
-    // Tạo connections giữa các layers
-    for (let layerIdx = 0; layerIdx < layers.length - 1; layerIdx++) {
-      const currentLayerStart = layerStartIndices[layerIdx]
-      const nextLayerStart = layerStartIndices[layerIdx + 1]
-      const currentLayerCount = layers[layerIdx].count
-      const nextLayerCount = layers[layerIdx + 1].count
-      
-      // Kết nối mỗi node với một số nodes ngẫu nhiên ở layer tiếp theo
-      for (let i = 0; i < currentLayerCount; i++) {
-        const connectionsPerNode = Math.floor(Math.random() * nextLayerCount * 0.8) + 2
-        
-        for (let j = 0; j < connectionsPerNode; j++) {
-          const targetNode = nextLayerStart + Math.floor(Math.random() * nextLayerCount)
-          links.push([currentLayerStart + i, targetNode])
-        }
-      }
+    this.color = colors[Math.floor(Math.random() * colors.length)]
+  }
+
+  update(canvas: HTMLCanvasElement) {
+    this.x += Math.cos(this.angle) * this.speed
+    this.y += Math.sin(this.angle) * this.speed
+    this.opacity -= 0.003
+
+    if (this.y > canvas.height * 0.67 || this.x > canvas.width || this.opacity <= 0) {
+      this.reset(canvas)
     }
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    ctx.save()
     
-    // Thêm một số connections random cho complexity
-    for (let i = 0; i < positions.length * 0.3; i++) {
-      const node1 = Math.floor(Math.random() * positions.length)
-      const node2 = Math.floor(Math.random() * positions.length)
-      if (node1 !== node2) {
-        links.push([node1, node2])
-      }
-    }
+    const gradient = ctx.createLinearGradient(
+      this.x,
+      this.y,
+      this.x - Math.cos(this.angle) * this.length,
+      this.y - Math.sin(this.angle) * this.length
+    )
     
-    return {
-      nodePositions: positions,
-      connections: links,
-      nodeGeometry: sphereGeo,
-      layerInfo: layers.map((layer, idx) => ({
-        startIndex: layerStartIndices[idx],
-        count: layer.count,
-        isOuter: layer.isOuter,
-        baseY: layer.y,
-        baseSpread: layer.spread
-      }))
-    }
-  }, [])
+    gradient.addColorStop(0, this.color.replace('rgb', 'rgba').replace(')', `, ${this.opacity})`))
+    gradient.addColorStop(1, this.color.replace('rgb', 'rgba').replace(')', ', 0)'))
 
-  // Material cho neurons với hiệu ứng glow - theme-aware
-  const nodeMaterial = useMemo(() => {
-    const material = new THREE.ShaderMaterial({
-      uniforms: {
-        time: { value: 0 },
-        colorActive: { value: isLightMode ? new THREE.Color('#0891b2') : new THREE.Color('#00aaff') },
-        colorInactive: { value: isLightMode ? new THREE.Color('#64748b') : new THREE.Color('#004466') },
-        colorCore: { value: isLightMode ? new THREE.Color('#0369a1') : new THREE.Color('#0088cc') }
-      },
-      vertexShader: `
-        uniform float time;
-        varying vec3 vPosition;
-        varying vec3 vNormal;
-        
-        void main() {
-          vPosition = position;
-          vNormal = normal;
-          
-          // Slight pulsing effect
-          vec3 pos = position * (1.0 + sin(time * 2.0 + position.x + position.y + position.z) * 0.1);
-          
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-        }
-      `,
-      fragmentShader: `
-        uniform float time;
-        uniform vec3 colorActive;
-        uniform vec3 colorInactive;
-        uniform vec3 colorCore;
-        varying vec3 vPosition;
-        varying vec3 vNormal;
-        
-        void main() {
-          // Tạo hiệu ứng activation dựa trên thời gian và vị trí
-          float activation = sin(time * 1.5 + vPosition.x * 0.1 + vPosition.y * 0.2 + vPosition.z * 0.15) * 0.5 + 0.5;
-          activation = smoothstep(0.3, 0.7, activation);
-          
-          // Fresnel effect cho glow nhẹ hơn
-          float fresnel = 1.0 - dot(normalize(vNormal), vec3(0.0, 0.0, 1.0));
-          fresnel = pow(fresnel, 3.0);
-          
-          // Mix colors based on activation - giảm độ sáng
-          vec3 baseColor = mix(colorInactive, colorActive, activation * 0.8);
-          vec3 glowColor = mix(baseColor, colorCore, fresnel * activation * 0.5);
-          
-          // Giảm core brightness
-          float coreBrightness = activation * (1.0 - fresnel) * 0.3;
-          vec3 finalColor = mix(glowColor, colorCore, coreBrightness);
-          
-          gl_FragColor = vec4(finalColor, 0.7 + activation * 0.2);
-        }
-      `,
-      transparent: true,
-      blending: THREE.AdditiveBlending
-    })
-
-    // Update colors when theme changes
-    material.uniforms.colorActive.value = isLightMode ? new THREE.Color('#0891b2') : new THREE.Color('#00aaff')
-    material.uniforms.colorInactive.value = isLightMode ? new THREE.Color('#64748b') : new THREE.Color('#004466')
-    material.uniforms.colorCore.value = isLightMode ? new THREE.Color('#0369a1') : new THREE.Color('#0088cc')
-
-    return material
-  }, [isLightMode])
-
-  // Material cho connections - theme-aware
-  const connectionMaterial = useMemo(() => {
-    const material = new THREE.ShaderMaterial({
-      uniforms: {
-        time: { value: 0 },
-        connectionColor: { value: isLightMode ? new THREE.Color('#0891b2') : new THREE.Color('#0088ff') },
-        pulseColor: { value: isLightMode ? new THREE.Color('#0369a1') : new THREE.Color('#00ffff') }
-      },
-      vertexShader: `
-        uniform float time;
-        varying vec3 vPosition;
-        varying vec2 vUv;
-        
-        void main() {
-          vPosition = position;
-          vUv = uv;
-          
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
-      fragmentShader: `
-        uniform float time;
-        uniform vec3 connectionColor;
-        uniform vec3 pulseColor;
-        varying vec3 vPosition;
-        varying vec2 vUv;
-        
-        void main() {
-          // Tạo hiệu ứng pulse chạy dọc theo đường nối
-          float pulse = sin(time * 4.0 + vUv.y * 10.0) * 0.5 + 0.5;
-          pulse = smoothstep(0.3, 0.7, pulse);
-          
-          vec3 color = mix(connectionColor, pulseColor, pulse);
-          float alpha = 0.4 + pulse * 0.4;
-          
-          gl_FragColor = vec4(color, alpha);
-        }
-      `,
-      transparent: true,
-      blending: THREE.AdditiveBlending
-    })
-
-    // Update colors when theme changes
-    material.uniforms.connectionColor.value = isLightMode ? new THREE.Color('#0891b2') : new THREE.Color('#0088ff')
-    material.uniforms.pulseColor.value = isLightMode ? new THREE.Color('#0369a1') : new THREE.Color('#00ffff')
-
-    return material
-  }, [isLightMode])
-
-  // Tạo geometry cho connections
-  const connectionGeometries = useMemo(() => {
-    const connections3D: Array<{
-      start: THREE.Vector3
-      end: THREE.Vector3
-      geometry: THREE.CylinderGeometry
-      position: THREE.Vector3
-      lookAt: THREE.Vector3
-    }> = []
+    ctx.strokeStyle = gradient
+    ctx.lineWidth = 2
+    ctx.lineCap = 'round'
     
-    connections.forEach(([startIdx, endIdx]) => {
-      const start = nodePositions[startIdx]
-      const end = nodePositions[endIdx]
-      
-      if (!start || !end) return
-      
-      const startVec = new THREE.Vector3(start[0], start[1], start[2])
-      const endVec = new THREE.Vector3(end[0], end[1], end[2])
-      const distance = startVec.distanceTo(endVec)
-      
-      const geometry = new THREE.CylinderGeometry(0.015, 0.015, distance, 6)
-      const position = new THREE.Vector3().addVectors(startVec, endVec).multiplyScalar(0.5)
-      
-      connections3D.push({
-        start: startVec,
-        end: endVec,
-        geometry,
-        position,
-        lookAt: endVec
-      })
-    })
-    
-    return connections3D
-  }, [connections, nodePositions])
+    ctx.beginPath()
+    ctx.moveTo(this.x, this.y)
+    ctx.lineTo(
+      this.x - Math.cos(this.angle) * this.length,
+      this.y - Math.sin(this.angle) * this.length
+    )
+    ctx.stroke()
 
-  useFrame((state) => {
-    if (nodesRef.current && nodeMaterial && connectionMaterial) {
-      const time = state.clock.elapsedTime
-      
-      nodeMaterial.uniforms.time.value = time
-      connectionMaterial.uniforms.time.value = time
-      
-      // Animate individual nodes với hiệu ứng mở rộng/thu hẹp cho outer layers
-      nodesRef.current.children.forEach((node, index) => {
-        if (node instanceof THREE.Mesh) {
-          const [originalX, originalY, originalZ] = nodePositions[index]
-          
-          // Tìm layer info cho node này
-          let currentLayer = null
-          for (const layer of layerInfo) {
-            if (index >= layer.startIndex && index < layer.startIndex + layer.count) {
-              currentLayer = layer
-              break
-            }
-          }
-          
-          if (currentLayer) {
-            // Hiệu ứng thở/mở rộng cho outer layers
-            let expansionFactor = 1.0
-            if (currentLayer.isOuter) {
-              // Outer layers có hiệu ứng mở rộng mạnh hơn
-              const breathe = Math.sin(time * 0.4 + index * 0.3) * 0.4 + 1.0
-              const pulse = Math.cos(time * 0.8 + originalX * 0.1 + originalZ * 0.1) * 0.3 + 1.0
-              expansionFactor = breathe * pulse
-              
-              // Tăng cường hiệu ứng cho input/output layers
-              if (currentLayer.startIndex === 0 || currentLayer.startIndex === layerInfo[layerInfo.length - 1].startIndex) {
-                expansionFactor *= 1.2 + Math.sin(time * 0.3) * 0.3
-              }
-            } else {
-              // Inner layers có hiệu ứng nhẹ hơn
-              expansionFactor = 1.0 + Math.sin(time * 0.6 + index * 0.2) * 0.15
-            }
-            
-            // Tính toán vị trí mới dựa trên expansion
-            const centerDistance = Math.sqrt(originalX * originalX + originalZ * originalZ)
-            const expandedX = originalX * expansionFactor
-            const expandedZ = originalZ * expansionFactor
-            
-            // Subtle floating animation
-            const floatY = Math.sin(time * 1.2 + index * 0.5) * 0.2
-            const floatX = Math.cos(time * 0.8 + index * 0.3) * 0.1
-            const floatZ = Math.sin(time * 1.5 + index * 0.7) * 0.15
-            
-            node.position.set(
-              expandedX + floatX, 
-              originalY + floatY, 
-              expandedZ + floatZ
-            )
-            
-            // Pulsing scale dựa trên activation và expansion
-            const activation = Math.sin(time * 1.5 + originalX * 0.1 + originalY * 0.2 + originalZ * 0.15) * 0.5 + 0.5
-            let scale = 1.0 + activation * 0.3
-            
-            // Outer nodes lớn hơn khi mở rộng
-            if (currentLayer.isOuter) {
-              scale *= (0.8 + expansionFactor * 0.3)
-            }
-            
-            node.scale.setScalar(scale)
-          }
-        }
-      })
-      
-      // Rotate entire network slowly với hiệu ứng breathing
-      if (nodesRef.current) {
-        const breathingRotation = Math.sin(time * 0.2) * 0.1
-        nodesRef.current.rotation.y = time * 0.08 + breathingRotation
-        nodesRef.current.rotation.x = Math.sin(time * 0.05) * 0.15 + breathingRotation * 0.5
-      }
-      
-      if (connectionsRef.current) {
-        const breathingRotation = Math.sin(time * 0.2) * 0.1
-        connectionsRef.current.rotation.y = time * 0.08 + breathingRotation
-        connectionsRef.current.rotation.x = Math.sin(time * 0.05) * 0.15 + breathingRotation * 0.5
-      }
-    }
-  })
+    // Glow effect
+    ctx.shadowBlur = 15
+    ctx.shadowColor = this.color
+    ctx.stroke()
 
-  return (
-    <group>
-      {/* Neurons */}
-      <group ref={nodesRef}>
-        {nodePositions.map((pos, index) => (
-          <mesh 
-            key={`node-${index}`}
-            geometry={nodeGeometry}
-            material={nodeMaterial}
-            position={pos}
-          />
-        ))}
-      </group>
-      
-      {/* Connections */}
-      <group ref={connectionsRef}>
-        {connections.map(([startIdx, endIdx], index) => (
-          <DynamicConnectionLine
-            key={`connection-${index}`}
-            startIndex={startIdx}
-            endIndex={endIdx}
-            material={connectionMaterial}
-            nodesGroup={nodesRef}
-          />
-        ))}
-      </group>
-    </group>
-  )
+    ctx.restore()
+  }
 }
 
-// Camera controller với mouse interaction (manual implementation)
-function InteractiveCamera() {
-  const { camera, gl, size } = useThree()
-  const isMouseDown = useRef(false)
-  const mousePos = useRef({ x: 0, y: 0 })
-  const cameraTarget = useRef(new THREE.Vector3(0, 0, 0))
-  const cameraDistance = useRef(30)
-  const cameraAngles = useRef({ theta: 0, phi: Math.PI / 3 })
-  const autoRotate = useRef(true)
-  
+// Static Star
+class Star {
+  x: number
+  y: number
+  size: number
+  opacity: number
+  twinkleSpeed: number
+  twinklePhase: number
+  angle: number
+  distance: number
+  centerX: number
+  centerY: number
+
+  constructor(canvas: HTMLCanvasElement) {
+    this.centerX = canvas.width / 2
+    this.centerY = canvas.height * 0.33
+    this.angle = Math.random() * Math.PI * 2
+    this.distance = Math.random() * Math.max(canvas.width, canvas.height * 0.67)
+    this.x = this.centerX + Math.cos(this.angle) * this.distance
+    this.y = this.centerY + Math.sin(this.angle) * this.distance
+    this.size = 0.5 + Math.random() * 1.5
+    this.opacity = 0.3 + Math.random() * 0.7
+    this.twinkleSpeed = 0.01 + Math.random() * 0.02
+    this.twinklePhase = Math.random() * Math.PI * 2
+  }
+
+  update(rotationSpeed: number) {
+    this.twinklePhase += this.twinkleSpeed
+    this.angle += rotationSpeed
+    this.x = this.centerX + Math.cos(this.angle) * this.distance
+    this.y = this.centerY + Math.sin(this.angle) * this.distance
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    if (this.y >= ctx.canvas.height * 0.67) return // Don't draw stars below water line
+    
+    const twinkle = 0.5 + Math.sin(this.twinklePhase) * 0.5
+    const currentOpacity = this.opacity * twinkle
+
+    ctx.save()
+    ctx.fillStyle = `rgba(255, 255, 255, ${currentOpacity})`
+    ctx.shadowBlur = 3
+    ctx.shadowColor = 'white'
+    
+    ctx.beginPath()
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
+    ctx.fill()
+    
+    ctx.restore()
+  }
+
+  updateCenter(canvas: HTMLCanvasElement) {
+    this.centerX = canvas.width / 2
+    this.centerY = canvas.height * 0.33
+  }
+}
+
+// Water Ripple with 3D effect
+class WaterRipple {
+  x: number
+  y: number
+  radius: number
+  maxRadius: number
+  opacity: number
+  speed: number
+  rings: number
+  isClickRipple: boolean
+
+  constructor(canvas: HTMLCanvasElement, x?: number, y?: number, isClick: boolean = false) {
+    if (x !== undefined && y !== undefined) {
+      this.x = x
+      this.y = y
+      this.isClickRipple = isClick
+    } else {
+      this.x = Math.random() * canvas.width
+      this.y = canvas.height * 0.67 + Math.random() * canvas.height * 0.33
+      this.isClickRipple = false
+    }
+    
+    this.radius = 0
+    this.maxRadius = isClick ? 150 + Math.random() * 100 : 30 + Math.random() * 50
+    this.opacity = isClick ? 0.8 : 0.3
+    this.speed = isClick ? 2 : 0.5 + Math.random() * 0.5
+    this.rings = isClick ? 3 : 1
+  }
+
+  update() {
+    this.radius += this.speed
+    this.opacity -= this.isClickRipple ? 0.01 : 0.005
+    this.speed *= 0.98 // Deceleration for more natural effect
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    ctx.save()
+    
+    if (this.isClickRipple) {
+      // Draw multiple concentric rings for 3D effect
+      for (let i = 0; i < this.rings; i++) {
+        const ringRadius = this.radius - (i * 30)
+        if (ringRadius > 0) {
+          const ringOpacity = this.opacity * (1 - i / this.rings) * 0.7
+          
+          // Outer glow
+          ctx.strokeStyle = `rgba(96, 165, 250, ${ringOpacity * 0.4})`
+          ctx.lineWidth = 6
+          ctx.shadowBlur = 15
+          ctx.shadowColor = 'rgba(59, 130, 246, 0.8)'
+          ctx.beginPath()
+          ctx.arc(this.x, this.y, ringRadius, 0, Math.PI * 2)
+          ctx.stroke()
+          
+          // Main ring with gradient
+          const gradient = ctx.createRadialGradient(this.x, this.y, ringRadius - 5, this.x, this.y, ringRadius + 5)
+          gradient.addColorStop(0, `rgba(139, 92, 246, ${ringOpacity})`)
+          gradient.addColorStop(0.5, `rgba(59, 130, 246, ${ringOpacity * 0.8})`)
+          gradient.addColorStop(1, `rgba(96, 165, 250, ${ringOpacity * 0.4})`)
+          
+          ctx.strokeStyle = gradient
+          ctx.lineWidth = 3
+          ctx.shadowBlur = 8
+          ctx.beginPath()
+          ctx.arc(this.x, this.y, ringRadius, 0, Math.PI * 2)
+          ctx.stroke()
+          
+          // Inner highlight
+          ctx.strokeStyle = `rgba(255, 255, 255, ${ringOpacity * 0.3})`
+          ctx.lineWidth = 1
+          ctx.shadowBlur = 0
+          ctx.beginPath()
+          ctx.arc(this.x, this.y, ringRadius - 2, 0, Math.PI * 2)
+          ctx.stroke()
+        }
+      }
+      
+      // Center splash effect
+      if (this.radius < 30) {
+        const splashOpacity = this.opacity * (1 - this.radius / 30)
+        const splashGradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, 20)
+        splashGradient.addColorStop(0, `rgba(255, 255, 255, ${splashOpacity * 0.8})`)
+        splashGradient.addColorStop(0.5, `rgba(96, 165, 250, ${splashOpacity * 0.6})`)
+        splashGradient.addColorStop(1, 'rgba(59, 130, 246, 0)')
+        
+        ctx.fillStyle = splashGradient
+        ctx.shadowBlur = 20
+        ctx.shadowColor = 'rgba(59, 130, 246, 0.8)'
+        ctx.beginPath()
+        ctx.arc(this.x, this.y, 20 - (this.radius / 30) * 10, 0, Math.PI * 2)
+        ctx.fill()
+      }
+    } else {
+      // Simple ripple for ambient effect
+      ctx.strokeStyle = `rgba(139, 92, 246, ${this.opacity})`
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2)
+      ctx.stroke()
+    }
+    
+    ctx.restore()
+  }
+
+  isDead() {
+    return this.opacity <= 0 || this.radius >= this.maxRadius
+  }
+}
+
+// 3D Water Surface Component
+function Water3D() {
+  const meshRef = useRef<THREE.Mesh>(null)
+  const [ripples, setRipples] = useState<Array<{ x: number; y: number; time: number; id: number }>>([])
+  const rippleIdRef = useRef(0)
+
   useEffect(() => {
-    const handleMouseDown = (event: MouseEvent) => {
-      isMouseDown.current = true
-      autoRotate.current = false
-      mousePos.current = { x: event.clientX, y: event.clientY }
-    }
-    
-    const handleMouseUp = () => {
-      isMouseDown.current = false
-      // Tự động quay trở lại sau 3 giây không tương tác
-      setTimeout(() => {
-        if (!isMouseDown.current) {
-          autoRotate.current = true
+    if (!meshRef.current) return
+
+    const geometry = meshRef.current.geometry as THREE.PlaneGeometry
+    const positionAttribute = geometry.attributes.position
+    const originalPositions = new Float32Array(positionAttribute.array)
+
+    let animationId: number
+
+    const animate = () => {
+      const positions = positionAttribute.array as Float32Array
+      const time = Date.now() * 0.001
+
+      // Reset to original positions
+      for (let i = 0; i < positions.length; i++) {
+        positions[i] = originalPositions[i]
+      }
+
+      // Apply ripple effects
+      ripples.forEach((ripple) => {
+        const rippleAge = time - ripple.time
+        if (rippleAge > 3) return // Remove old ripples
+
+        for (let i = 0; i < positions.length; i += 3) {
+          const x = positions[i]
+          const y = positions[i + 1]
+
+          const dx = x - ripple.x
+          const dy = y - ripple.y
+          const distance = Math.sqrt(dx * dx + dy * dy)
+
+          const waveRadius = rippleAge * 2 // Wave propagation speed
+          const waveWidth = 0.5
+
+          if (distance < waveRadius + waveWidth && distance > waveRadius - waveWidth) {
+            const intensity = Math.exp(-rippleAge * 1.5) // Decay over time
+            const wave = Math.sin((distance - waveRadius) * 10) * intensity * 0.3
+            positions[i + 2] += wave
+          }
+
+          // Inner displacement
+          if (distance < waveRadius) {
+            const innerIntensity = Math.exp(-rippleAge * 2) * (1 - distance / waveRadius)
+            positions[i + 2] += Math.sin(time * 2 + distance * 5) * innerIntensity * 0.1
+          }
         }
-      }, 3000)
+      })
+
+      positionAttribute.needsUpdate = true
+      geometry.computeVertexNormals()
+
+      animationId = requestAnimationFrame(animate)
     }
-    
-    const handleMouseMove = (event: MouseEvent) => {
-      if (!isMouseDown.current) return
-      
-      const deltaX = event.clientX - mousePos.current.x
-      const deltaY = event.clientY - mousePos.current.y
-      
-      cameraAngles.current.theta -= deltaX * 0.01
-      cameraAngles.current.phi += deltaY * 0.01
-      
-      // Giới hạn góc phi để không bị lật
-      cameraAngles.current.phi = Math.max(0.1, Math.min(Math.PI - 0.1, cameraAngles.current.phi))
-      
-      mousePos.current = { x: event.clientX, y: event.clientY }
-    }
-    
-    const handleWheel = (event: WheelEvent) => {
-      event.preventDefault()
-      autoRotate.current = false
-      cameraDistance.current += event.deltaY * 0.01
-      cameraDistance.current = Math.max(15, Math.min(80, cameraDistance.current))
-      
-      // Tự động quay trở lại sau 2 giây không zoom
-      setTimeout(() => {
-        if (!isMouseDown.current) {
-          autoRotate.current = true
-        }
-      }, 2000)
-    }
-    
-    gl.domElement.addEventListener('mousedown', handleMouseDown)
-    gl.domElement.addEventListener('mouseup', handleMouseUp)
-    gl.domElement.addEventListener('mousemove', handleMouseMove)
-    gl.domElement.addEventListener('wheel', handleWheel, { passive: false })
-    
+
+    animate()
+
     return () => {
-      gl.domElement.removeEventListener('mousedown', handleMouseDown)
-      gl.domElement.removeEventListener('mouseup', handleMouseUp)
-      gl.domElement.removeEventListener('mousemove', handleMouseMove)
-      gl.domElement.removeEventListener('wheel', handleWheel)
+      if (animationId) cancelAnimationFrame(animationId)
     }
-  }, [gl])
-  
-  useFrame((state) => {
-    const time = state.clock.elapsedTime
-    
-    // Auto rotation khi không tương tác
-    if (autoRotate.current) {
-      cameraAngles.current.theta += 0.005
+  }, [ripples])
+
+  const handleClick = (event: any) => {
+    const point = event.point
+    const newRipple = {
+      x: point.x,
+      y: point.y,
+      time: Date.now() * 0.001,
+      id: rippleIdRef.current++
     }
     
-    // Breathing effect
-    const breathe = Math.sin(time * 0.1) * 2
-    const finalDistance = cameraDistance.current + breathe
-    
-    // Tính toán vị trí camera từ góc cầu
-    const x = finalDistance * Math.sin(cameraAngles.current.phi) * Math.cos(cameraAngles.current.theta)
-    const y = finalDistance * Math.cos(cameraAngles.current.phi)
-    const z = finalDistance * Math.sin(cameraAngles.current.phi) * Math.sin(cameraAngles.current.theta)
-    
-    camera.position.set(x, y, z)
-    camera.lookAt(cameraTarget.current)
-  })
-  
-  return null
-}
-
-function BackgroundScene() {
-  const [isLightMode, setIsLightMode] = useState(false)
-
-  // Detect theme changes
-  useEffect(() => {
-    const checkTheme = () => {
-      setIsLightMode(document.documentElement.classList.contains('light-mode'))
-    }
-    
-    checkTheme()
-    
-    // Watch for theme changes
-    const observer = new MutationObserver(checkTheme)
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class']
-    })
-    
-    return () => observer.disconnect()
-  }, [])
-
-  const backgroundGradient = isLightMode 
-    ? 'radial-gradient(circle, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)'
-    : 'radial-gradient(circle, #0a0a0a 0%, #001122 50%, #000000 100%)'
+    setRipples(prev => [...prev.filter(r => Date.now() * 0.001 - r.time < 3), newRipple])
+  }
 
   return (
-    <Canvas 
-      camera={{ position: [25, 10, 25], fov: 75 }}
-      style={{ background: backgroundGradient }}
+    <mesh
+      ref={meshRef}
+      rotation={[-Math.PI / 2, 0, 0]}
+      position={[0, -2, 0]}
+      onClick={handleClick}
     >
-      {/* OrbitControls từ @react-three/drei */}
-      <OrbitControls
-        enableDamping={true}
-        dampingFactor={0.05}
-        minDistance={15}
-        maxDistance={80}
-        maxPolarAngle={Math.PI * 0.9}
-        minPolarAngle={Math.PI * 0.1}
-        enableZoom={true}
-        enablePan={false}
-        autoRotate={true}
-        autoRotateSpeed={0.3}
-        rotateSpeed={0.5}
-        zoomSpeed={0.6}
+      <planeGeometry args={[20, 20, 100, 100]} />
+      <meshStandardMaterial
+        color="#0a1929"
+        metalness={0.8}
+        roughness={0.2}
+        side={THREE.DoubleSide}
+        transparent
+        opacity={0.9}
       />
-      
-      <NeuralNetwork />
-      
-      {/* Ánh sáng tổng thể nhẹ - theme aware */}
-      <ambientLight intensity={isLightMode ? 0.6 : 0.2} />
-      
-      {/* Ánh sáng chính - tạo hiệu ứng cyberpunk hoặc clean */}
-      <directionalLight 
-        position={[20, 20, 20]} 
-        intensity={isLightMode ? 0.3 : 0.5} 
-        color={isLightMode ? "#0891b2" : "#0066ff"} 
-      />
-      
-      {/* Ánh sáng cyan - neural activity */}
-      <pointLight 
-        position={[0, 15, 0]} 
-        intensity={0.8} 
-        color="#00ffff" 
-        distance={50}
-      />
-      
-      {/* Ánh sáng tím - deep learning */}
-      <pointLight 
-        position={[-15, -5, 15]} 
-        intensity={0.6} 
-        color="#8800ff" 
-        distance={40}
-      />
-      
-      {/* Ánh sáng xanh lá - active neurons */}
-      <pointLight 
-        position={[15, 5, -15]} 
-        intensity={0.4} 
-        color="#00ff88" 
-        distance={35}
-      />
-      
-      {/* Fog để tạo không gian sâu */}
-      <fog attach="fog" args={['#000011', 20, 80]} />
-    </Canvas>
+    </mesh>
   )
 }
 
-export default BackgroundScene;
+export default function BackgroundScene() {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const ctx = canvas.getContext('2d', { alpha: false })
+    if (!ctx) return
+
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+
+    // Initialize elements
+    const shootingStars: ShootingStar[] = []
+    const stars: Star[] = []
+    const ripples: WaterRipple[] = []
+
+    // Create shooting stars
+    for (let i = 0; i < 8; i++) {
+      shootingStars.push(new ShootingStar(canvas))
+    }
+
+    // Create static stars
+    for (let i = 0; i < 200; i++) {
+      stars.push(new Star(canvas))
+    }
+
+    let rippleTimer = 0
+
+    const animate = () => {
+      // Sky gradient
+      const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 0.67)
+      skyGradient.addColorStop(0, '#0a0a1f')
+      skyGradient.addColorStop(0.5, '#1a0a2e')
+      skyGradient.addColorStop(1, '#16213e')
+      ctx.fillStyle = skyGradient
+      ctx.fillRect(0, 0, canvas.width, canvas.height * 0.67)
+
+      // Water gradient
+      const waterGradient = ctx.createLinearGradient(0, canvas.height * 0.67, 0, canvas.height)
+      waterGradient.addColorStop(0, '#0f3460')
+      waterGradient.addColorStop(0.5, '#0a1929')
+      waterGradient.addColorStop(1, '#020617')
+      ctx.fillStyle = waterGradient
+      ctx.fillRect(0, canvas.height * 0.67, canvas.width, canvas.height * 0.33)
+
+      // Water horizon line with glow
+      ctx.save()
+      ctx.strokeStyle = 'rgba(139, 92, 246, 0.3)'
+      ctx.lineWidth = 2
+      ctx.shadowBlur = 10
+      ctx.shadowColor = 'rgba(139, 92, 246, 0.5)'
+      ctx.beginPath()
+      ctx.moveTo(0, canvas.height * 0.67)
+      ctx.lineTo(canvas.width, canvas.height * 0.67)
+      ctx.stroke()
+      ctx.restore()
+
+      // Update and draw static stars with rotation
+      const rotationSpeed = 0.0003 // Slow rotation following sky orbit
+      stars.forEach(star => {
+        star.update(rotationSpeed)
+        star.draw(ctx)
+        
+        // Reflection in water
+        if (star.y < canvas.height * 0.67 && star.y > 0) {
+          ctx.save()
+          ctx.globalAlpha = 0.3
+          const reflectY = canvas.height * 0.67 + (canvas.height * 0.67 - star.y) * 0.5
+          const twinkle = 0.5 + Math.sin(star.twinklePhase) * 0.5
+          ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity * twinkle * 0.3})`
+          ctx.beginPath()
+          ctx.arc(star.x, reflectY, star.size * 0.8, 0, Math.PI * 2)
+          ctx.fill()
+          ctx.restore()
+        }
+      })
+
+      // Update and draw shooting stars
+      shootingStars.forEach(star => {
+        star.update(canvas)
+        star.draw(ctx)
+        
+        // Enhanced reflection in water - always visible
+        if (star.y < canvas.height * 0.67) {
+          ctx.save()
+          
+          // Calculate reflection position
+          const reflectY = canvas.height * 0.67 + (canvas.height * 0.67 - star.y) * 0.5
+          
+          // Opacity based on star's current opacity and distance
+          const distanceRatio = star.y / (canvas.height * 0.67)
+          const baseReflectionOpacity = star.opacity * 0.6
+          const reflectionOpacity = baseReflectionOpacity * Math.max(0.3, distanceRatio)
+          
+          const gradient = ctx.createLinearGradient(
+            star.x,
+            reflectY,
+            star.x - Math.cos(star.angle) * star.length * 0.7,
+            reflectY + Math.sin(star.angle) * star.length * 0.7
+          )
+          gradient.addColorStop(0, star.color.replace('rgb', 'rgba').replace(')', `, ${reflectionOpacity})`))
+          gradient.addColorStop(1, star.color.replace('rgb', 'rgba').replace(')', ', 0)'))
+          
+          ctx.strokeStyle = gradient
+          ctx.lineWidth = 2
+          ctx.shadowBlur = 12
+          ctx.shadowColor = star.color
+          
+          ctx.beginPath()
+          ctx.moveTo(star.x, reflectY)
+          ctx.lineTo(
+            star.x - Math.cos(star.angle) * star.length * 0.7,
+            reflectY + Math.sin(star.angle) * star.length * 0.7
+          )
+          ctx.stroke()
+          ctx.restore()
+        }
+      })
+
+      // Create water ripples periodically
+      rippleTimer++
+      if (rippleTimer > 60) {
+        ripples.push(new WaterRipple(canvas))
+        rippleTimer = 0
+      }
+
+      // Update and draw ripples
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        ripples[i].update()
+        ripples[i].draw(ctx)
+        
+        if (ripples[i].isDead()) {
+          ripples.splice(i, 1)
+        }
+      }
+
+      requestAnimationFrame(animate)
+    }
+
+    animate()
+
+    const handleClick = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect()
+      const x = e.clientX - rect.left
+      const y = e.clientY - rect.top
+      
+      // Only create ripple if clicking in water area
+      if (y > canvas.height * 0.67) {
+        // Create multiple ripples for more dramatic effect
+        for (let i = 0; i < 2; i++) {
+          setTimeout(() => {
+            ripples.push(new WaterRipple(canvas, x, y, true))
+          }, i * 100)
+        }
+      }
+    }
+
+    const handleResize = () => {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+      
+      // Update star centers for rotation
+      stars.forEach(star => {
+        star.updateCenter(canvas)
+      })
+    }
+
+    canvas.addEventListener('click', handleClick)
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      canvas.removeEventListener('click', handleClick)
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+
+  return (
+    <>
+      {/* 2D Sky with stars and shooting stars */}
+      <canvas
+        ref={canvasRef}
+        className="fixed inset-0 w-full h-full -z-10"
+        style={{ pointerEvents: 'none' }}
+      />
+      
+      {/* 3D Water surface at bottom */}
+      <div className="fixed inset-0 w-full h-full -z-10 pointer-events-auto" style={{ top: '67%' }}>
+        <Canvas
+          camera={{ position: [0, 3, 8], fov: 60 }}
+          style={{ background: 'transparent' }}
+        >
+          <ambientLight intensity={0.5} />
+          <pointLight position={[10, 10, 10]} intensity={1} color="#8b5cf6" />
+          <pointLight position={[-10, 5, -10]} intensity={0.5} color="#3b82f6" />
+          <Water3D />
+        </Canvas>
+      </div>
+    </>
+  )
+}

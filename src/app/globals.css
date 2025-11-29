@@ -3,44 +3,79 @@
 @tailwind utilities;
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --primary: #06b6d4;
-  --secondary: #8b5cf6;
-  --accent: #f59e0b;
-  --muted: #374151;
-  --border: rgba(255, 255, 255, 0.1);
-  --card-bg: rgba(0, 0, 0, 0.3);
-  --text-primary: #ffffff;
-  --text-secondary: #d1d5db;
-  --text-muted: #9ca3af;
+  /* Modern Designer Color Palette - Dark Mode */
+  --background: #0f172a;
+  --background-secondary: #1e1b4b;
+  --foreground: #f8fafc;
+  
+  /* Primary: Indigo/Purple gradient */
+  --primary: #6366f1;
+  --primary-light: #818cf8;
+  --primary-dark: #4f46e5;
+  
+  /* Secondary: Fuchsia/Pink gradient */
+  --secondary: #ec4899;
+  --secondary-light: #f472b6;
+  --secondary-dark: #db2777;
+  
+  /* Accent: Emerald */
+  --accent: #10b981;
+  --accent-light: #34d399;
+  --accent-dark: #059669;
+  
+  /* Neutral colors */
+  --muted: #334155;
+  --border: rgba(248, 250, 252, 0.1);
+  --card-bg: rgba(30, 27, 75, 0.5);
+  
+  /* Text colors */
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
 }
 
 /* Light mode styles */
 html.light-mode {
   --background: #f8fafc;
-  --foreground: #1e293b;
-  --primary: #1e293b;
-  --secondary: #374151;
-  --accent: #6b7280;
+  --background-secondary: #f1f5f9;
+  --foreground: #0f172a;
+  
+  /* Primary colors for light mode */
+  --primary: #4f46e5;
+  --primary-light: #6366f1;
+  --primary-dark: #4338ca;
+  
+  /* Secondary colors for light mode */
+  --secondary: #db2777;
+  --secondary-light: #ec4899;
+  --secondary-dark: #be185d;
+  
+  /* Accent for light mode */
+  --accent: #059669;
+  --accent-light: #10b981;
+  --accent-dark: #047857;
+  
+  /* Neutral colors for light mode */
   --muted: #e2e8f0;
-  --border: rgba(0, 0, 0, 0.1);
+  --border: rgba(15, 23, 42, 0.1);
   --card-bg: rgba(255, 255, 255, 0.8);
-  --text-primary: #1e293b;
-  --text-secondary: #374151;
-  --text-muted: #6b7280;
+  
+  /* Text colors for light mode */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
 }
 
 body {
   color: var(--foreground);
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a2a2a 100%);
-  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(135deg, var(--background) 0%, var(--background-secondary) 100%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
   transition: all 0.3s ease;
 }
 
 html.light-mode body {
-  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%) !important;
-  color: #1e293b !important;
+  background: linear-gradient(135deg, var(--background) 0%, var(--background-secondary) 100%) !important;
+  color: var(--foreground) !important;
 }
 
 @layer utilities {
@@ -48,66 +83,40 @@ html.light-mode body {
     text-wrap: balance;
   }
 
-  /* Light mode color overrides - force override all cyan/blue colors */
-  html.light-mode .text-cyan-200 { color: #6b7280 !important; }
-  html.light-mode .text-cyan-300 { color: #374151 !important; }
-  html.light-mode .text-cyan-400 { color: #1e293b !important; }
-  html.light-mode .text-cyan-500 { color: #1e293b !important; }
+  /* Modern color utility classes */
+  .text-primary { color: var(--primary) !important; }
+  .text-secondary { color: var(--secondary) !important; }
+  .text-accent { color: var(--accent) !important; }
+  .bg-primary { background-color: var(--primary) !important; }
+  .bg-secondary { background-color: var(--secondary) !important; }
+  .bg-accent { background-color: var(--accent) !important; }
+  .border-primary { border-color: var(--primary) !important; }
+  .border-secondary { border-color: var(--secondary) !important; }
   
-  /* Background overrides */
-  html.light-mode .bg-cyan-400 { background-color: #374151 !important; }
-  html.light-mode .bg-cyan-500 { background-color: #1e293b !important; }
-  html.light-mode .bg-cyan-600 { background-color: #0f172a !important; }
+  /* Gradient utilities */
+  .gradient-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  }
   
-  /* Gradient overrides */
-  html.light-mode .from-cyan-400 { --tw-gradient-from: #374151 !important; }
-  html.light-mode .from-cyan-500 { --tw-gradient-from: #1e293b !important; }
-  html.light-mode .to-cyan-400 { --tw-gradient-to: #374151 !important; }
-  html.light-mode .to-cyan-500 { --tw-gradient-to: #1e293b !important; }
-  html.light-mode .via-cyan-300 { --tw-gradient-via: #6b7280 !important; }
-  html.light-mode .via-cyan-400 { --tw-gradient-via: #374151 !important; }
-  html.light-mode .via-cyan-500 { --tw-gradient-via: #1e293b !important; }
+  .gradient-accent {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+  }
   
-  /* Blue overrides */
-  html.light-mode .from-blue-400 { --tw-gradient-from: #374151 !important; }
-  html.light-mode .from-blue-500 { --tw-gradient-from: #1e293b !important; }
-  html.light-mode .to-blue-500 { --tw-gradient-to: #1e293b !important; }
-  html.light-mode .to-blue-600 { --tw-gradient-to: #0f172a !important; }
-  html.light-mode .via-blue-400 { --tw-gradient-via: #374151 !important; }
-  html.light-mode .via-blue-500 { --tw-gradient-via: #1e293b !important; }
+  /* Text gradient effect */
+  .text-gradient {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
   
-  /* Border overrides */
-  html.light-mode .border-cyan-400 { border-color: #1e293b !important; }
-  html.light-mode .border-cyan-300 { border-color: #374151 !important; }
-  
-  /* Hover states */
-  html.light-mode .hover\:text-cyan-300:hover { color: #374151 !important; }
-  html.light-mode .hover\:text-cyan-400:hover { color: #1e293b !important; }
-  html.light-mode .hover\:bg-cyan-400:hover { background-color: #374151 !important; }
-  html.light-mode .hover\:bg-cyan-500:hover { background-color: #1e293b !important; }
-  html.light-mode .hover\:bg-cyan-600:hover { background-color: #0f172a !important; }
-  html.light-mode .hover\:from-cyan-600:hover { --tw-gradient-from: #0f172a !important; }
-  html.light-mode .hover\:to-blue-600:hover { --tw-gradient-to: #0f172a !important; }
-  
-  /* Group hover states */
-  html.light-mode .group-hover\:text-cyan-300 { color: #374151 !important; }
-  html.light-mode .group-hover\:text-cyan-400 { color: #1e293b !important; }
-  
-  /* Background opacity overrides */
-  html.light-mode .bg-cyan-400\/10 { background-color: rgba(30, 41, 59, 0.1) !important; }
-  html.light-mode .bg-cyan-400\/20 { background-color: rgba(30, 41, 59, 0.2) !important; }
-  html.light-mode .border-cyan-400\/20 { border-color: rgba(30, 41, 59, 0.2) !important; }
-  html.light-mode .border-cyan-400\/30 { border-color: rgba(30, 41, 59, 0.3) !important; }
-  html.light-mode .border-cyan-400\/60 { border-color: rgba(30, 41, 59, 0.6) !important; }
-  html.light-mode .hover\:border-cyan-400\/60:hover { border-color: rgba(30, 41, 59, 0.6) !important; }
-  html.light-mode .hover\:bg-cyan-400\/10:hover { background-color: rgba(30, 41, 59, 0.1) !important; }
-  
-  /* Yellow color fixes for better readability in light mode */
-  html.light-mode .text-yellow-400 { color: #dc2626 !important; }
-  
-  /* Hard-coded cyan fixes for Footer and other components */
-  html.light-mode span.text-cyan-400 { color: #1e293b !important; }
-  html.light-mode .text-cyan-400.font-medium { color: #1e293b !important; }
+  /* Card with glassmorphism */
+  .card-glass {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+  }
 }
 
 /* Custom scrollbar */
@@ -139,6 +148,55 @@ html.light-mode ::-webkit-scrollbar-thumb {
 
 html.light-mode ::-webkit-scrollbar-thumb:hover {
   background: rgba(30, 41, 59, 0.5);
+}
+
+/* Infinite scroll animations */
+@keyframes scroll-up {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-33.333%);
+  }
+}
+
+@keyframes scroll-down {
+  0% {
+    transform: translateY(-33.333%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-scroll-up {
+  animation: scroll-up 25s linear infinite;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.animate-scroll-up:hover {
+  animation-play-state: paused;
+}
+
+.animate-scroll-down {
+  animation: scroll-down 25s linear infinite;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.animate-scroll-down:hover {
+  animation-play-state: paused;
+}
+
+/* Performance optimizations */
+.will-change-transform {
+  will-change: transform;
+}
+
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
 @media (prefers-color-scheme: dark) {
