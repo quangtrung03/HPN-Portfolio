@@ -97,14 +97,14 @@ export default function AllProjectsPage() {
       name: 'Packaging',
       folderPath: 'chainuoc',
       images: [
-        'z7275516064311_4c4c8d5f0d50d23c811501e6e8915f09.jpg',
-        'z7275516116124_375fe6493b79710dfc57cd3626acb8bc.jpg',
-        'z7275516169197_882559cb219ddb33175d605c68d3343c.jpg',
-        'z7275516223833_00aff4b6f9df5e33cb6e046018923e67.jpg',
-        'z7275516277823_9cbd3ae1785a864db094619be637c732.jpg',
-        'z7275516384986_cf87057063a767386ff47772072ce18d.jpg',
-        'z7275516437501_cb26d3a7b0e95d88ee3bd28f7a009f2a.jpg',
-        'z7275516545107_90404162acfddc2012f28f23b7597bd2.jpg'
+        '2.jpg',
+        '6.jpg',
+        '3.jpg',
+        '7.jpg',
+        '4.jpg',
+        '8.jpg',
+        '5.jpg',
+        '1.jpg'
       ],
       links: {},
       titles: {},

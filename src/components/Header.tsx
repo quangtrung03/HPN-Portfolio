@@ -39,10 +39,10 @@ export default function Header() {
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       scrolled ? 'bg-black/20 backdrop-blur-md border-b border-white/10' : ''
     }`}>
-      <nav className="container mx-auto px-6 py-4">
+      <nav className="container mx-auto px-6 py-2">
         <div className="flex items-center justify-between">
           {/* Navigation */}
-          <ul className="hidden md:flex items-center gap-8">
+          <ul className="hidden md:flex items-center gap-6">
             {navItems.map((item) => (
               <li key={item.name}>
                 <a 
@@ -62,7 +62,7 @@ export default function Header() {
           {/* CTA */}
           <a
             href="#contact"
-            className="hidden md:block px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full text-sm font-medium hover:shadow-lg hover:shadow-purple-500/50 transition-all"
+            className="hidden md:block px-5 py-1.5 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full text-sm font-medium hover:shadow-lg hover:shadow-purple-500/50 transition-all"
           >
             Liên hệ ngay
           </a>
