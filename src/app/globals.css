@@ -199,6 +199,43 @@ img {
   image-rendering: crisp-edges;
 }
 
+/* Flipbook Page Turn Animations */
+@keyframes page-flip-next {
+  0% {
+    transform: rotateY(2deg);
+  }
+  50% {
+    transform: rotateY(-90deg);
+    box-shadow: -20px 0 40px rgba(0,0,0,0.5);
+  }
+  100% {
+    transform: rotateY(-180deg);
+    box-shadow: -5px 0 20px rgba(0,0,0,0.3);
+  }
+}
+
+@keyframes page-flip-prev {
+  0% {
+    transform: rotateY(-180deg);
+  }
+  50% {
+    transform: rotateY(-90deg);
+    box-shadow: -20px 0 40px rgba(0,0,0,0.5);
+  }
+  100% {
+    transform: rotateY(2deg);
+    box-shadow: 5px 0 20px rgba(0,0,0,0.3);
+  }
+}
+
+.animate-page-flip-next {
+  animation: page-flip-next 0.8s ease-in-out forwards;
+}
+
+.animate-page-flip-prev {
+  animation: page-flip-prev 0.8s ease-in-out forwards;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;

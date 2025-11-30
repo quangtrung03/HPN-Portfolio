@@ -37,13 +37,8 @@ const   Footer = () => {
           {/* Brand Section */}
           <div>
             <div className="flex items-center space-x-3 mb-4">
-              {/* Logo */}
-              <img 
-                src="/images/logomili.png" 
-                alt="Portfolio Logo" 
-                className="w-10 h-10 rounded-lg object-cover"
-              />
-              <h3 className={`text-xl font-bold bg-clip-text text-transparent ${
+              
+              <h3 className={`text-3xl font-bold bg-clip-text text-transparent ${
                 isDarkMode 
                   ? 'bg-gradient-to-r from-cyan-400 to-white' 
                   : 'bg-gradient-to-r from-gray-800 to-gray-600'

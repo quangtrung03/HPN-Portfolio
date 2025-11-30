@@ -6,7 +6,7 @@ export default function Hero() {
       <div className="container mx-auto max-w-5xl text-center">
         {/* Greeting */}
         <p className="text-purple-400 text-lg md:text-xl mb-4 animate-fade-in">
-          Xinh chào, mình là
+          Portfolio
         </p>
 
         {/* Name */}
@@ -31,13 +31,13 @@ export default function Hero() {
             href="#projects"
             className="px-8 py-4 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full font-medium hover:shadow-2xl hover:shadow-purple-500/50 hover:scale-105 transition-all"
           >
-            View My Work
+            Xem dự án
           </a>
           <a
             href="#contact"
             className="px-8 py-4 border border-white/20 rounded-full font-medium hover:bg-white/5 hover:border-white/40 transition-all"
           >
-            Get In Touch
+            Liên hệ tôi
           </a>
         </div>
 

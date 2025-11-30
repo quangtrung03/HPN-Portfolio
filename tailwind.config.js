@@ -34,6 +34,8 @@ module.exports = {
         'bounce-slow': 'bounce 3s infinite',
         'glow': 'glow 2s ease-in-out infinite',
         'gradient': 'gradient 8s ease infinite',
+        'page-flip-next': 'pageFlipNext 0.8s ease-in-out',
+        'page-flip-prev': 'pageFlipPrev 0.8s ease-in-out',
       },
       keyframes: {
         fadeIn: {
@@ -59,6 +61,16 @@ module.exports = {
         gradient: {
           '0%, 100%': { backgroundPosition: '0% 50%' },
           '50%': { backgroundPosition: '100% 50%' },
+        },
+        pageFlipNext: {
+          '0%': { transform: 'rotateY(2deg)' },
+          '50%': { transform: 'rotateY(-90deg)', opacity: '0.5' },
+          '100%': { transform: 'rotateY(-180deg)', opacity: '0' },
+        },
+        pageFlipPrev: {
+          '0%': { transform: 'rotateY(-178deg)', opacity: '0' },
+          '50%': { transform: 'rotateY(-90deg)', opacity: '0.5' },
+          '100%': { transform: 'rotateY(2deg)' },
         },
       },
       backgroundSize: {
