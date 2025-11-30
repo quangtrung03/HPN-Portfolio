@@ -48,7 +48,7 @@ export default function About() {
                 một Designer đến từ TP.HCM.
               </p>
               <p>
-                Là sinh viên chuyên ngành Thiết kế ký thuật số tại Đại học FPT. Với tôi, thiết kế không chỉ là tạo ra cái đẹp mà là tìm kiếm giải pháp thị giác để truyền tải thông điệp một cách mạch lạc và hiệu quả nhất. Trong quá trình học tập, tôi luôn đề cao sự chỉn chu, tư duy sáng tạo kết hợp với tính ứng dụng thực tiễn trong từng sản phẩm. Tôi luôn giữ thái độ cầu thị, không ngừng học hỏi để hoàn thiện kỹ năng và tư duy mỗi ngày.
+                Là sinh viên chuyên ngành Thiết kế mỹ thuật số tại Đại học FPT. Với tôi, thiết kế không chỉ là tạo ra cái đẹp mà là tìm kiếm giải pháp thị giác để truyền tải thông điệp một cách mạch lạc và hiệu quả nhất. Trong quá trình học tập, tôi luôn đề cao sự chỉn chu, tư duy sáng tạo kết hợp với tính ứng dụng thực tiễn trong từng sản phẩm. Tôi luôn giữ thái độ cầu thị, không ngừng học hỏi để hoàn thiện kỹ năng và tư duy mỗi ngày.
               </p>
               
             </div>
