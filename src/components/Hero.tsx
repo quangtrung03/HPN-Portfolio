@@ -21,7 +21,7 @@ export default function Hero() {
 
         {/* Description */}
         <p className="text-lg md:text-xl text-gray-400 mb-12 max-w-2xl mx-auto animate-slide-up animation-delay-400">
-          Là một sinh viên chuyên ngành thiết kế đồ họa. 
+          Là một sinh viên chuyên ngành thiết kế kỹ thuật số. 
           Đam mê sáng tạo những trải nghiệm thị giác độc đáo và tìm kiếm cảm hứng từ nghệ thuật đương đại.
         </p>
 
