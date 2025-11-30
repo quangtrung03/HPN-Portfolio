@@ -18,6 +18,15 @@ type FolderType = {
 }
 
 export default function AllProjectsPage() {
+  // Lấy folder từ URL query
+  const getInitialFolder = () => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      return params.get('folder') || 'poster'
+    }
+    return 'poster'
+  }
+
   const folders: FolderType[] = [
     {
       id: 'poster',
@@ -197,7 +206,7 @@ export default function AllProjectsPage() {
     }
   ]
 
-  const [selectedFolderId, setSelectedFolderId] = useState('poster')
+  const [selectedFolderId, setSelectedFolderId] = useState(getInitialFolder())
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [selectedFlipbook, setSelectedFlipbook] = useState<string | null>(null)
   const [flipbookData, setFlipbookData] = useState<{ images?: string[], pdf?: string, title?: string } | null>(null)

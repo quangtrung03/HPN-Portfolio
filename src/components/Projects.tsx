@@ -5,6 +5,23 @@ import { useEffect, useState } from 'react'
 export default function Projects() {
   const [shuffledImages, setShuffledImages] = useState<string[]>([])
 
+  // Map folder từ đường dẫn ảnh
+  const getFolderFromPath = (imgPath: string) => {
+    if (imgPath.includes('/poster/')) return 'poster'
+    if (imgPath.includes('/chainuoc/')) return 'chainuoc'
+    if (imgPath.includes('/photography/')) return 'photography'
+    if (imgPath.includes('/3D/')) return '3d'
+    if (imgPath.includes('/perspective/')) return 'perspective'
+    if (imgPath.includes('/anorther/')) return 'anorther'
+    return 'poster'
+  }
+
+  // Handle double click
+  const handleDoubleClick = (imgPath: string) => {
+    const folderId = getFolderFromPath(imgPath)
+    window.location.href = `/projects?folder=${folderId}`
+  }
+
   // Tất cả ảnh từ các folder (trừ flipbook)
   const allImages = [
     // Poster
@@ -94,7 +111,8 @@ export default function Projects() {
               {[...column1, ...column1, ...column1].map((img, idx) => (
                 <div 
                   key={`col1-${idx}`}
-                  className="relative group rounded-lg overflow-hidden border border-white/10 hover:border-purple-500/50 transition-all"
+                  className="relative group rounded-lg overflow-hidden border border-white/10 hover:border-purple-500/50 transition-all cursor-pointer"
+                  onDoubleClick={() => handleDoubleClick(img)}
                 >
                   <img 
                     src={img} 
@@ -116,11 +134,11 @@ export default function Projects() {
           {/* Column 2 - Scroll Down */}
           <div className="relative h-[500px] overflow-hidden rounded-lg">
             <div className="animate-scroll-down space-y-3 will-change-transform">
-              {/* Duplicate for infinite scroll */}
               {[...column2, ...column2, ...column2].map((img, idx) => (
                 <div 
                   key={`col2-${idx}`}
-                  className="relative group rounded-lg overflow-hidden border border-white/10 hover:border-purple-500/50 transition-all"
+                  className="relative group rounded-lg overflow-hidden border border-white/10 hover:border-purple-500/50 transition-all cursor-pointer"
+                  onDoubleClick={() => handleDoubleClick(img)}
                 >
                   <img 
                     src={img} 
@@ -131,7 +149,6 @@ export default function Projects() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="absolute bottom-0 left-0 right-0 p-3">
                       <h3 className="text-base font-bold mb-1">Project {(idx % 5) + 5}</h3>
-                   
                     </div>
                   </div>
                 </div>
