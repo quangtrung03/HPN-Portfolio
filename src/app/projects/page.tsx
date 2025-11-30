@@ -42,7 +42,7 @@ export default function AllProjectsPage() {
     },
     {
       id: 'flipbook',
-      name: 'FlipBook',
+      name: 'Magazine',
       folderPath: 'flipbook',
       images: [
         'flipbook1/color research-images-0.jpg',
