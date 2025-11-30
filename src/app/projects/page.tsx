@@ -26,7 +26,7 @@ export default function AllProjectsPage() {
       images: ['1.jpeg', '2.jpeg', '3.jpeg', '4.jpeg', '5.jpeg', '6.jpg', '7.jpg', '8.jpg', '9.jpg'],
       links: {},
       titles: {
-        '1.jpeg': 'Nhà hát Hồ Gươm',
+        '1.jpeg': 'Project 1',
         '2.jpeg': 'Project 2',
         '3.jpeg': 'Project 3',
         '4.jpeg': 'Project 4',
