@@ -12,7 +12,7 @@ export default function Projects() {
     if (imgPath.includes('/photography/')) return 'photography'
     if (imgPath.includes('/3D/')) return '3d'
     if (imgPath.includes('/perspective/')) return 'perspective'
-    if (imgPath.includes('/anorther/')) return 'anorther'
+    if (imgPath.includes('/other/')) return 'Other'
     return 'poster'
   }
 
@@ -68,12 +68,13 @@ export default function Projects() {
     '/images/perspective/z7275697595698_cf8c132d62484f8044e69a0f492c66c8.jpg',
     '/images/perspective/z7275697707405_d796470fb119fc55cbca4b98c89d9824.jpg',
     '/images/perspective/z7275697874195_b6362a861cbc6e9543ee9082883025d4.jpg',
-    // Another
-    '/images/anorther/z7275607221883_cb83aa08127b257b7ecdf8fbd87cab81.jpg',
-    '/images/anorther/z7275615420683_36c3bc7899171696b145af50436e701d.jpg',
-    '/images/anorther/z7275798278760_f6b7c1633d2707a7f345c9784c6ac5ec.jpg',
-    '/images/anorther/z7275798336279_02e536c81ae5b00267d997ebee34cbec.jpg',
-    '/images/anorther/z7275799330670_a833fd2e2551dde21a3add5023fcd92b.jpg',
+    // Other
+    '/images/other/dendau.jpg',
+    '/images/other/z7275607221883_cb83aa08127b257b7ecdf8fbd87cab81.jpg',
+    '/images/other/z7275615420683_36c3bc7899171696b145af50436e701d.jpg',
+    '/images/other/z7275798278760_f6b7c1633d2707a7f345c9784c6ac5ec.jpg',
+    '/images/other/z7275798336279_02e536c81ae5b00267d997ebee34cbec.jpg',
+    '/images/other/z7275799330670_a833fd2e2551dde21a3add5023fcd92b.jpg',
   ]
 
   // Shuffle và chia thành 2 cột

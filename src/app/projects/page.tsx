@@ -180,10 +180,11 @@ export default function AllProjectsPage() {
       flipbookPdf: {}
     },
     {
-      id: 'anorther',
-      name: 'Another',
-      folderPath: 'anorther',
+      id: 'Other',
+      name: 'Other',
+      folderPath: 'other',
       images: [
+        'dendau.jpg',
         'z7275607221883_cb83aa08127b257b7ecdf8fbd87cab81.jpg',
         'z7275615420683_36c3bc7899171696b145af50436e701d.jpg',
         'z7275798278760_f6b7c1633d2707a7f345c9784c6ac5ec.jpg',
@@ -194,6 +195,7 @@ export default function AllProjectsPage() {
         'z7275615420683_36c3bc7899171696b145af50436e701d.jpg': 'https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fdendauthaodien%2Fposts%2Fpfbid09tvkERPt71F6G8SzREZsc8U7gW6Ld4Q83VGwFZwp53uEp2c89BZELpdt1uLcgtPVl&show_text=true&width=500'
       },
       titles: {
+        'dendau.jpg': 'Đèn Dầu',
         'z7275607221883_cb83aa08127b257b7ecdf8fbd87cab81.jpg': 'Sticker',
         'z7275615420683_36c3bc7899171696b145af50436e701d.jpg': 'Social Post',
         'z7275798278760_f6b7c1633d2707a7f345c9784c6ac5ec.jpg': 'Logo',
